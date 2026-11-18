@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#5146d8">
+  <title>Lingo Star | Learn English</title>
+  <style>
+    :root {
+      --ink: #202044;
+      --muted: #777795;
+      --primary: #5146d8;
+      --primary-dark: #3930ad;
+      --purple: #8b5cf6;
+      --blue: #4f9cf9;
+      --pale: #f1f2ff;
+      --line: #e8e8f5;
+      --white: #fff;
+      --shadow: 0 12px 35px rgba(52, 47, 130, .10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink); background: #f7f8ff;
+    }
+    button { font: inherit; cursor: pointer; }
+    .app { min-height: 100vh; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; padding: 14px clamp(16px, 4vw, 52px); background: rgba(255,255,255,.92);
+      border-bottom: 1px solid var(--line); backdrop-filter: blur(12px);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1.2rem; letter-spacing: -.5px; }
+    .brand-mark { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 14px; color: white;
+      background: linear-gradient(135deg, var(--primary), var(--purple)); box-shadow: 0 7px 18px #5146d84a; }
+    .brand span:last-child { color: var(--primary); }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .pill { padding: 9px 13px; border-radius: 999px; background: var(--pale); color: var(--primary); font-size: .88rem; font-weight: 800; }
+    .layout { display: grid; grid-template-columns: 245px minmax(0, 1fr); max-width: 1500px; margin: auto; }
+    aside { padding: 26px 16px; border-right: 1px solid var(--line); min-height: calc(100vh - 69px); background: #fff; }
+    .nav-label { padding: 8px 12px; color: #9999b3; font-size: .72rem; font-weight: 900; letter-spacing: 1.3px; text-transform: uppercase; }
+    .nav-btn { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px; margin: 3px 0; border: 0; border-radius: 13px; color: #666684; background: transparent; text-align: left; font-weight: 750; }
+    .nav-btn:hover, .nav-btn.active { color: var(--primary); background: var(--pale); }
+    .nav-icon { width: 24px; text-align: center; font-size: 1.12rem; }
+    .side-card { margin: 30px 4px 0; padding: 16px; border-radius: 18px; color: white; background: linear-gradient(145deg, #5146d8, #8b5cf6); }
+    .side-card p { margin: 7px 0 0; color: #e8e5ff; font-size: .85rem; line-height: 1.5; }
+    main { min-width: 0; padding: clamp(18px, 4vw, 42px); }
+    .page { display: none; animation: fade .22s ease; }
+    .page.active { display: block; }
+    @keyframes fade { from { opacity: .4; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+    .welcome { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 25px; }
+    h1 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.45rem); letter-spacing: -1.1px; }
+    h2 { margin: 0 0 8px; font-size: 1.35rem; letter-spacing: -.4px; }
+    h3 { margin: 0 0 7px; }
+    .muted { color: var(--muted); }
+    .welcome p { margin: 8px 0 0; color: var(--muted); }
+    .hero {
+      position: relative; overflow: hidden; padding: clamp(23px, 4vw, 38px); border-radius: 25px; color: white;
+      background: linear-gradient(115deg, #4036c6 0%, #6255e9 55%, #9473f5 100%); box-shadow: var(--shadow);
+    }
+    .hero:after { content: "✦"; position: absolute; right: 8%; top: -45px; font-size: 210px; color: #ffffff17; transform: rotate(15deg); }
+    .hero-content { position: relative; z-index: 1; max-width: 620px; }
+    .eyebrow { font-size: .76rem; letter-spacing: 1.6px; text-transform: uppercase; font-weight: 900; color: #e3ddff; }
+    .hero h2 { margin: 12px 0; font-size: clamp(1.65rem, 4vw, 2.5rem); }
+    .hero p { max-width: 520px; line-height: 1.65; color: #eeedff; }
+    .primary-btn, .secondary-btn, .ghost-btn {
+      border: 0; border-radius: 12px; padding: 11px 16px; font-weight: 850; transition: .18s ease;
+    }
+    .primary-btn { color: white; background: var(--primary); box-shadow: 0 6px 15px #5146d82b; }
+    .primary-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .hero .primary-btn { color: var(--primary); background: white; }
+    .secondary-btn { color: var(--primary); background: var(--pale); }
+    .ghost-btn { color: var(--muted); background: transparent; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0 30px; }
+    .stat, .panel, .course-card, .lesson-card, .word-card, .game-card { background: white; border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 5px 20px rgba(48,45,110,.04); }
+    .stat { display: flex; align-items: center; gap: 13px; padding: 17px; }
+    .stat-icon { display: grid; place-items: center; width: 43px; height: 43px; border-radius: 14px; background: var(--pale); font-size: 1.25rem; }
+    .stat strong { display: block; font-size: 1.25rem; }
+    .stat small { color: var(--muted); }
+    .section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 27px 0 14px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 15px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 15px; }
+    .course-card, .lesson-card, .word-card, .game-card { padding: 18px; }
+    .course-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 13px; }
+    .course-icon { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 15px; background: var(--pale); font-size: 1.35rem; }
+    .tag { padding: 6px 9px; border-radius: 999px; background: #f1edff; color: #7154d8; font-size: .72rem; font-weight: 900; }
+    .progress { height: 8px; overflow: hidden; margin: 13px 0 8px; border-radius: 999px; background: #ededf7; }
+    .progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--primary), var(--purple)); }
+    .course-card p, .lesson-card p, .game-card p { color: var(--muted); line-height: 1.5; font-size: .9rem; }
+    .lesson-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .lesson-info { display: flex; align-items: center; gap: 13px; }
+    .lesson-number { display: grid; place-items: center; width: 39px; height: 39px; flex: 0 0 auto; border-radius: 13px; color: var(--primary); background: var(--pale); font-weight: 900; }
+    .lesson-card p { margin: 4px 0 0; }
+    .page-intro { margin-bottom: 22px; }
+    .page-intro p { margin: 7px 0 0; color: var(--muted); }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 9px; margin: 18px 0; }
+    .filter { border: 1px solid var(--line); background: white; color: var(--muted); border-radius: 999px; padding: 9px 14px; font-weight: 800; }
+    .filter.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .lesson-body { max-width: 800px; }
+    .lesson-box { margin: 14px 0; padding: 19px; border-radius: 16px; background: #f5f4ff; border: 1px solid #e8e4ff; line-height: 1.7; }
+    .example { padding: 12px 14px; margin: 9px 0; background: white; border-left: 4px solid var(--purple); border-radius: 8px; }
+    .quiz-option { display: block; width: 100%; margin: 9px 0; padding: 13px 14px; text-align: left; border: 1px solid var(--line); border-radius: 12px; background: white; color: var(--ink); font-weight: 700; }
+    .quiz-option:hover { border-color: var(--purple); background: #faf9ff; }
+    .quiz-option.selected { border-color: var(--primary); background: var(--pale); }
+    .feedback { min-height: 25px; margin: 10px 0; font-weight: 800; }
+    .feedback.good { color: #16834b; } .feedback.bad { color: #c14b55; }
+    .word-card { display: flex; flex-direction: column; gap: 9px; }
+    .word { font-size: 1.35rem; font-weight: 900; color: var(--primary); }
+    .word-card button { align-self: flex-start; }
+    .game-card { display: flex; flex-direction: column; gap: 9px; }
+    .game-emoji { font-size: 2rem; }
+    .input { width: 100%; max-width: 420px; padding: 13px 14px; border: 1px solid var(--line); border-radius: 12px; font: inherit; outline: none; }
+    .input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px #5146d81c; }
+    .panel { padding: 20px; }
+    .empty { padding: 25px; text-align: center; color: var(--muted); background: white; border: 1px dashed #d8d7ee; border-radius: 16px; }
+    footer { padding: 25px 10px 10px; text-align: center; color: #9999b1; font-size: .82rem; }
+    .mobile-menu { display: none; }
+    @media (max-width: 850px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { min-height: 0; padding: 8px 12px; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
+      .nav-label, .side-card { display: none; }
+      .nav-list { display: flex; gap: 5px; min-width: max-content; }
+      .nav-btn { width: auto; padding: 10px 12px; }
+      .nav-btn span:last-child { display: none; }
+      main { padding: 22px 16px; }
+    }
+    @media (max-width: 600px) {
+      .topbar { padding: 11px 14px; }
+      .pill { padding: 8px 10px; font-size: .78rem; }
+      .stats { gap: 8px; }
+      .stat { display: block; padding: 12px; }
+      .stat-icon { width: 35px; height: 35px; margin-bottom: 8px; }
+      .stat strong { font-size: 1.1rem; }
+      .stat small { font-size: .72rem; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .welcome { align-items: flex-start; }
+      .welcome .pill { display: none; }
+      .lesson-card { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">✦</div><div>Lingo <span>Star</span></div></div>
+    <div class="top-actions"><div class="pill">⭐ <span id="topPoints">0</span> points</div><div class="pill">🌱 <span id="topLevel">Beginner</span></div></div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <div class="nav-label">Menu</div>
+      <nav class="nav-list">
+        <button class="nav-btn active" data-page="home"><span class="nav-icon">🏠</span><span>Dashboard</span></button>
+        <button class="nav-btn" data-page="lessons"><span class="nav-icon">📚</span><span>Lessons</span></button>
+        <button class="nav-btn" data-page="vocabulary"><span class="nav-icon">🔤</span><span>Vocabulary</span></button>
+        <button class="nav-btn" data-page="quiz"><span class="nav-icon">📝</span><span>Quick Quiz</span></button>
+        <button class="nav-btn" data-page="games"><span class="nav-icon">🎮</span><span>Games</span></button>
+        <button class="nav-btn" data-page="progress"><span class="nav-icon">🏆</span><span>My Progress</span></button>
+      </nav>
+      <div class="side-card"><strong>Keep shining! ✨</strong><p>A little English practice every day can make a big difference.</p></div>
+    </aside>
+
+    <main>
+      <section class="page active" id="home">
+        <div class="welcome"><div><h1>Welcome to Lingo Star! ✨</h1><p>Your English journey starts here. Learn a little, shine a lot.</p></div><div class="pill">🌟 Your learning space</div></div>
+        <div class="hero"><div class="hero-content"><div class="eyebrow">Learn • Practice • Shine</div><h2>Ready to grow your English skills?</h2><p>Explore friendly lessons, build your vocabulary, test what you know, and earn points as you learn from beginner to advanced.</p><button class="primary-btn" onclick="showPage('lessons')">Explore lessons&nbsp; →</button></div></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-icon">⭐</div><div><strong id="statPoints">0</strong><small>Total points</small></div></div>
+          <div class="stat"><div class="stat-icon">📖</div><div><strong id="statLessons">0</strong><small>Lessons completed</small></div></div>
+          <div class="stat"><div class="stat-icon">🏅</div><div><strong id="statLevel">Beginner</strong><small>Current level</small></div></div>
+        </div>
+        <div class="section-head"><div><h2>Choose your learning path</h2><div class="muted">Three levels, one bright future.</div></div><button class="ghost-btn" onclick="showPage('lessons')">View all →</button></div>
+        <div class="grid-3" id="homeCourses"></div>
+        <div class="section-head"><div><h2>Continue learning</h2><div class="muted">Pick up where you left off.</div></div></div>
+        <div id="homeLessons" class="grid-2"></div>
+      </section>
+
+      <section class="page" id="lessons">
+        <div class="page-intro"><h1>English Lessons 📚</h1><p>Learn grammar and useful English step by step.</p></div>
+        <div class="toolbar" id="levelFilters">
+          <button class="filter active" data-level="All">All levels</button><button class="filter" data-level="Beginner">Beginner</button><button class="filter" data-level="Intermediate">Intermediate</button><button class="filter" data-level="Advanced">Advanced</button>
+        </div>
+        <div class="grid-2" id="lessonList"></div>
+      </section>
+
+      <section class="page" id="lessonDetail">
+        <button class="ghost-btn" onclick="showPage('lessons')">← Back to lessons</button>
+        <div id="lessonContent" class="lesson-body"></div>
+      </section>
+
+      <section class="page" id="vocabulary">
+        <div class="page-intro"><h1>Vocabulary Builder 🔤</h1><p>Discover useful words and grow your word power.</p></div>
+        <input class="input" id="wordSearch" placeholder="Search a word or meaning..." aria-label="Search vocabulary">
+        <div class="grid-3" id="wordList" style="margin-top:18px"></div>
+      </section>
+
+      <section class="page" id="quiz">
+        <div class="page-intro"><h1>Quick Quiz 📝</h1><p>Choose the best answer. Each correct answer earns 5 points.</p></div>
+        <div class="panel" style="max-width:720px">
+          <div class="pill" id="quizCount">Question 1 of 5</div>
+          <h2 id="quizQuestion" style="margin-top:18px">Loading question...</h2>
+          <div id="quizOptions"></div>
+          <div class="feedback" id="quizFeedback" aria-live="polite"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="primary-btn" id="checkQuiz">Check answer</button><button class="secondary-btn" id="nextQuiz" hidden>Next question →</button></div>
+        </div>
+      </section>
+
+      <section class="page" id="games">
+        <div class="page-intro"><h1>Learning Games 🎮</h1><p>Practice English in a fun way.</p></div>
+        <div class="grid-2">
+          <div class="game-card"><div class="game-emoji">🧩</div><h2>Word Match</h2><p>Match each English word with its meaning.</p><div id="matchGame"></div></div>
+          <div class="game-card"><div class="game-emoji">✍️</div><h2>Spell It!</h2><p>Put the letters in the correct order.</p><div id="spellGame"></div></div>
+        </div>
+      </section>
+
+      <section class="page" id="progress">
+        <div class="page-intro"><h1>My Progress 🏆</h1><p>Every completed lesson is a step forward.</p></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-icon">⭐</div><div><strong id="progressPoints">0</strong><small>Points earned</small></div></div>
+          <div class="stat"><div class="stat-icon">📚</div><div><strong id="progressLessons">0</strong><small>Lessons completed</small></div></div>
+          <div class="stat"><div class="stat-icon">🚀</div><div><strong id="progressLevel">Beginner</strong><small>Learning level</small></div></div>
+        </div>
+        <div class="panel"><h2>Your learning levels</h2><p class="muted">Complete lessons to collect points. Your progress is saved on this device.</p><div id="levelProgress"></div></div>
+        <div style="margin-top:16px"><button class="secondary-btn" id="resetProgress">Reset my progress</button></div>
+      </section>
+
+      <footer>Made for curious minds · Lingo Star © <span id="year"></span></footer>
+    </main>
+  </div>
+</div>
+
+<script>
+  const lessons = [
+    {id:1, level:"Beginner", title:"Greetings and Introductions", topic:"Everyday English", time:"5 min", icon:"👋",
+     intro:"Greetings are words we use when we meet people. Introductions help us tell others who we are.",
+     points:["Hello / Hi — friendly greetings.","Good morning — used in the morning.","Good afternoon — used after midday.","Good evening — used in the evening.","My name is ... — use this to introduce yourself."],
+     examples:["Hello! My name is Sara.","Good morning, teacher.","Nice to meet you!"],
+     question:"Which sentence introduces your name?", options:["I am fine, thank you.","My name is Hana.","Good evening."], answer:1},
+    {id:2, level:"Beginner", title:"The Verb 'To Be'", topic:"Basic grammar", time:"7 min", icon:"🧱",
+     intro:"The verb 'to be' has three common present forms: am, is, and are. We use them to describe people and things.",
+     points:["I am — I am a student.","He / She / It is — She is happy.","You / We / They are — They are friends."],
+     examples:["I am ready.","The book is new.","We are learners."],
+     question:"Choose the correct sentence.", options:["They is happy.","I are a student.","She is kind."], answer:2},
+    {id:3, level:"Beginner", title:"Present Simple Tense", topic:"Basic grammar", time:"8 min", icon:"⏰",
+     intro:"Use the present simple for habits, routines, and facts. Add -s or -es to most verbs with he, she, or it.",
+     points:["I play football.","She reads every day.","They go to school.","The sun rises in the east."],
+     examples:["I study English every evening.","He watches TV on weekends."],
+     question:"Which sentence is correct?", options:["She walk to school.","She walks to school.","She walking to school."], answer:1},
+    {id:4, level:"Intermediate", title:"Past Simple Tense", topic:"Grammar in context", time:"8 min", icon:"📅",
+     intro:"Use the past simple to talk about completed actions in the past. Regular verbs often end in -ed. Some verbs are irregular.",
+     points:["I visited my aunt yesterday. (regular)","We played a game. (regular)","He went home early. (irregular)","They saw a bird. (irregular)"],
+     examples:["Last week, I studied for my exam.","She bought a new notebook."],
+     question:"Choose the past form of 'go'.", options:["Goed","Went","Going"], answer:1},
+    {id:5, level:"Intermediate", title:"Comparatives and Superlatives", topic:"Describing things", time:"9 min", icon:"📏",
+     intro:"Comparatives compare two things. Superlatives show the highest or lowest degree in a group.",
+     points:["small → smaller → the smallest","tall → taller → the tallest","good → better → the best","interesting → more interesting → the most interesting"],
+     examples:["A train is faster than a bicycle.","This is the most interesting book in the library."],
+     question:"What is the superlative of 'good'?", options:["Goodest","Better","The best"], answer:2},
+    {id:6, level:"Advanced", title:"Conditionals", topic:"Advanced grammar", time:"10 min", icon:"🔀",
+     intro:"Conditional sentences describe a condition and its result. Different forms express facts, possibilities, or imagined situations.",
+     points:["Zero: If you heat ice, it melts. (general fact)","First: If it rains, I will stay home. (real possibility)","Second: If I had more time, I would read. (imagined situation)","Third: If I had studied, I would have passed. (imagined past)"],
+     examples:["If you practise, you will improve.","If I were taller, I would play basketball."],
+     question:"Which sentence uses the first conditional?", options:["If water freezes, it becomes ice.","If I had wings, I would fly.","If I finish early, I will call you."], answer:2},
+    {id:7, level:"Advanced", title:"Formal and Academic Writing", topic:"Writing skills", time:"10 min", icon:"✒️",
+     intro:"Formal writing is clear, respectful, and organised. It avoids slang and uses precise vocabulary.",
+     points:["Use complete sentences.","Choose precise words instead of slang.","Connect ideas with linking words such as however, therefore, and furthermore.","Support your main point with examples or evidence."],
+     examples:["Informal: Kids need books. Formal: Children require access to books.","The results were limited; therefore, further research is needed."],
+     question:"Which word is a formal linking word?", options:["Gonna","Furthermore","Kinda"], answer:1}
+  ];
+
+  const vocabulary = [
+    ["Curious","Wanting to learn or know something.","adjective"],["Improve","To become or make something better.","verb"],
+    ["Brave","Ready to face something difficult.","adjective"],["Discover","To find something for the first time.","verb"],
+    ["Reliable","Able to be trusted or depended on.","adjective"],["Opportunity","A good chance to do something.","noun"],
+    ["Communicate","To share information, ideas, or feelings.","verb"],["Environment","The natural world or surroundings.","noun"],
+    ["Although","Used to introduce a contrast.","conjunction"],["Achievement","Something good reached through effort.","noun"],
+    ["Precise","Exact and accurate.","adjective"],["Furthermore","In addition; used to add information.","adverb"]
+  ];
+  const quizQuestions = [
+    {q:"Choose the correct plural of 'child'.",o:["Childs","Children","Childes"],a:1},
+    {q:"Which word is an adjective?",o:["Quickly","Beautiful","Run"],a:1},
+    {q:"Complete: 'They ___ playing football.'",o:["is","am","are"],a:2},
+    {q:"What is the opposite of 'ancient'?",o:["Modern","Old","Historic"],a:0},
+    {q:"Choose the correct spelling.",o:["Necesary","Necessary","Neccessary"],a:1}
+  ];
+
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem("lingoStarProgress") || "{}"); } catch(e) { saved = {}; }
+  let points = Number(saved.points) || 0;
+  let completed = Array.isArray(saved.completed) ? saved.completed : [];
+  let quizIndex = 0, selectedOption = null, quizChecked = false;
+  let matchIndex = 0, spellIndex = 0;
+
+  function save() {
+    localStorage.setItem("lingoStarProgress", JSON.stringify({points, completed}));
+    updateStats();
+  }
+  function levelName() {
+    if (points >= 100) return "Advanced";
+    if (points >= 40) return "Intermediate";
+    return "Beginner";
+  }
+  function updateStats() {
+    ["topPoints","statPoints","progressPoints"].forEach(id => document.getElementById(id).textContent = points);
+    ["statLessons","progressLessons"].forEach(id => document.getElementById(id).textContent = completed.length);
+    ["topLevel","statLevel","progressLevel"].forEach(id => document.getElementById(id).textContent = levelName());
+    document.getElementById("levelProgress").innerHTML = ["Beginner","Intermediate","Advanced"].map((level,i) => {
+      const target = [40,100,160][i], start = [0,40,100][i];
+      const pct = Math.max(0,Math.min(100,((points-start)/(target-start))*100));
+      return `<div style="margin:18px 0"><div style="display:flex;justify-content:space-between;font-weight:800"><span>${level}</span><span>${Math.round(pct)}%</span></div><div class="progress"><span style="width:${pct}%"></span></div></div>`;
+    }).join("");
+  }
+  function showPage(page) {
+    document.querySelectorAll(".page").forEach(el => el.classList.toggle("active", el.id === page));
+    document.querySelectorAll(".nav-btn").forEach(el => el.classList.toggle("active", el.dataset.page === page));
+    window.scrollTo({top:0,behavior:"smooth"});
+    if(page === "progress") updateStats();
+  }
+  document.querySelectorAll(".nav-btn").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
+
+  function courseCard(level, icon, desc, count) {
+    const done = lessons.filter(l=>l.level===level && completed.includes(l.id)).length;
+    return `<div class="course-card"><div class="course-top"><div class="course-icon">${icon}</div><span class="tag">${level}</span></div><h3>${level} English</h3><p>${desc}</p><div class="progress"><span style="width:${count ? done/count*100 : 0}%"></span></div><small class="muted">${done} of ${count} lessons completed</small></div>`;
+  }
+  function lessonCard(l) {
+    const done = completed.includes(l.id);
+    return `<div class="lesson-card"><div class="lesson-info"><div class="lesson-number">${done?"✓":l.icon}</div><div><strong>${l.title}</strong><p>${l.level} · ${l.time} · ${l.topic}</p></div></div><button class="${done?"secondary-btn":"primary-btn"}" onclick="openLesson(${l.id})">${done?"Review":"Start"}</button></div>`;
+  }
+  function renderHome() {
+    document.getElementById("homeCourses").innerHTML =
+      courseCard("Beginner","🌱","Build a strong foundation in everyday English.",3) +
+      courseCard("Intermediate","🚀","Use English with more confidence and detail.",2) +
+      courseCard("Advanced","🏆","Develop complex grammar and writing skills.",2);
+    document.getElementById("homeLessons").innerHTML = lessons.slice(0,2).map(lessonCard).join("");
+  }
+  function renderLessons(level="All") {
+    const filtered = level==="All" ? lessons : lessons.filter(l=>l.level===level);
+    document.getElementById("lessonList").innerHTML = filtered.map(lessonCard).join("");
+  }
+  document.querySelectorAll("#levelFilters .filter").forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll("#levelFilters .filter").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active"); renderLessons(btn.dataset.level);
+  }));
+  function openLesson(id) {
+    const l = lessons.find(x=>x.id===id); if(!l) return;
+    document.getElementById("lessonContent").innerHTML = `
+      <div class="page-intro" style="margin-top:18px"><span class="tag">${l.level}</span><h1 style="margin-top:12px">${l.icon} ${l.title}</h1><p>${l.topic} · ${l.time}</p></div>
+      <div class="lesson-box">${l.intro}<h3 style="margin-top:18px">Key points</h3><ul>${l.points.map(p=>`<li>${p}</li>`).join("")}</ul></div>
+      <h2>Examples</h2>${l.examples.map(e=>`<div class="example">${e}</div>`).join("")}
+      <div class="panel" style="margin-top:18px"><h2>Check your understanding</h2><p>${l.question}</p><div id="lessonOptions">${l.options.map((o,i)=>`<button class="quiz-option" onclick="selectLessonOption(${i})">${o}</button>`).join("")}</div><div class="feedback" id="lessonFeedback"></div><button class="primary-btn" id="completeLesson" onclick="completeLesson(${l.id})" hidden>Complete lesson · +10 points</button></div>`;
+    window.currentLesson = l; window.lessonChoice = null; showPage("lessonDetail");
+  }
+  function selectLessonOption(i) {
+    window.lessonChoice=i;
+    document.querySelectorAll("#lessonOptions .quiz-option").forEach((b,j)=>b.classList.toggle("selected",i===j));
+    const fb=document.getElementById("lessonFeedback");
+    fb.textContent="Answer selected. Press Check answer below to see how you did.";
+    let check=document.getElementById("lessonCheck");
+    if(!check){check=document.createElement("button");check.id="lessonCheck";check.className="secondary-btn";check.textContent="Check answer";check.onclick=checkLesson;document.getElementById("lessonOptions").after(check);}
+  }
+  function checkLesson() {
+    const l=window.currentLesson, fb=document.getElementById("lessonFeedback");
+    if(window.lessonChoice===null){fb.textContent="Choose an answer first.";return;}
+    if(window.lessonChoice===l.answer){fb.textContent="Correct! Great work. 🌟";fb.className="feedback good";document.getElementById("completeLesson").hidden=false;}
+    else {fb.textContent="Not quite. Read the lesson again and try once more.";fb.className="feedback bad";}
+  }
+  function completeLesson(id) {
+    if(!completed.includes(id)){completed.push(id);points+=10;save();}
+    renderHome(); renderLessons(document.querySelector("#levelFilters .filter.active").dataset.level);
+    document.getElementById("lessonFeedback").textContent="Lesson completed! You earned 10 points. 🎉";
+    document.getElementById("completeLesson").textContent="Completed ✓";
+    document.getElementById("completeLesson").disabled=true;
+  }
+  function renderWords(query="") {
+    const list=vocabulary.filter(w=>(w[0]+" "+w[1]).toLowerCase().includes(query.toLowerCase()));
+    document.getElementById("wordList").innerHTML=list.length?list.map(w=>`<div class="word-card"><div class="word">${w[0]}</div><span class="tag">${w[2]}</span><div>${w[1]}</div><button class="secondary-btn" onclick="speakWord('${w[0]}')">🔊 Listen</button></div>`).join(""):`<div class="empty">No matching words. Try another search.</div>`;
+  }
+  function speakWord(word) {
+    if("speechSynthesis" in window){const utterance=new SpeechSynthesisUtterance(word);utterance.lang="en-US";speechSynthesis.speak(utterance);}
+    else alert("Speech is not available in this browser.");
+  }
+  document.getElementById("wordSearch").addEventListener("input",e=>renderWords(e.target.value));
+
+  function renderQuiz() {
+    const q=quizQuestions[quizIndex];
+    document.getElementById("quizCount").textContent=`Question ${quizIndex+1} of ${quizQuestions.length}`;
+    document.getElementById("quizQuestion").textContent=q.q;
+    document.getElementById("quizOptions").innerHTML=q.o.map((o,i)=>`<button class="quiz-option" onclick="chooseQuiz(${i})">${o}</button>`).join("");
+    document.getElementById("quizFeedback").textContent="";
+    document.getElementById("quizFeedback").className="feedback";
+    document.getElementById("checkQuiz").hidden=false;
+    document.getElementById("nextQuiz").hidden=true;
+    selectedOption=null;quizChecked=false;
+  }
+  function chooseQuiz(i) {
+    if(quizChecked)return;selectedOption=i;
+    document.querySelectorAll("#quizOptions .quiz-option").forEach((b,j)=>b.classList.toggle("selected",i===j));
+  }
+  document.getElementById("checkQuiz").addEventListener("click",()=>{
+    if(selectedOption===null){document.getElementById("quizFeedback").textContent="Please choose an answer.";return;}
+    const q=quizQuestions[quizIndex],fb=document.getElementById("quizFeedback");quizChecked=true;
+    if(selectedOption===q.a){fb.textContent="Correct! +5 points ⭐";fb.className="feedback good";points+=5;save();}
+    else{fb.textContent=`Good try! The correct answer is: ${q.o[q.a]}.`;fb.className="feedback bad";}
+    document.getElementById("checkQuiz").hidden=true;document.getElementById("nextQuiz").hidden=false;
+  });
+  document.getElementById("nextQuiz").addEventListener("click",()=>{
+    quizIndex=(quizIndex+1)%quizQuestions.length;renderQuiz();
+  });
+
+  const matchPairs=[["Bright","Full of light"],["Gentle","Kind and soft"],["Rapid","Very fast"],["Silent","Making no sound"]];
+  function renderMatch() {
+    const pair=matchPairs[matchIndex%matchPairs.length];
+    document.getElementById("matchGame").innerHTML=`<p><strong>${pair[0]}</strong></p><div>${[pair[1],"Very slow","Very noisy"].sort(()=>Math.random()-.5).map(x=>`<button class="quiz-option" onclick="checkMatch('${x.replace(/'/g,"\\'")}')">${x}</button>`).join("")}</div><div class="feedback" id="matchFeedback"></div>`;
+  }
+  function checkMatch(value) {
+    const fb=document.getElementById("matchFeedback");
+    if(value===matchPairs[matchIndex%matchPairs.length][1]){fb.textContent="That's a match! +5 points";fb.className="feedback good";points+=5;save();matchIndex++;setTimeout(renderMatch,850);}
+    else{fb.textContent="Try again!";fb.className="feedback bad";}
+  }
+  const spellWords=["STAR","LEARN","BOOK","HAPPY"];
+  function renderSpell() {
+    const word=spellWords[spellIndex%spellWords.length], scrambled=word.split("").sort(()=>Math.random()-.5).join("");
+    document.getElementById("spellGame").innerHTML=`<p>Unscramble these letters: <strong style="letter-spacing:5px;color:var(--primary)">${scrambled}</strong></p><input class="input" id="spellAnswer" placeholder="Type the word" autocomplete="off"><div style="margin-top:10px"><button class="primary-btn" onclick="checkSpell('${word}')">Check word</button></div><div class="feedback" id="spellFeedback"></div>`;
+  }
+  function checkSpell(word) {
+    const fb=document.getElementById("spellFeedback"),answer=document.getElementById("spellAnswer").value.trim().toUpperCase();
+    if(answer===word){fb.textContent="Correct spelling! +5 points 🎉";fb.className="feedback good";points+=5;save();spellIndex++;setTimeout(renderSpell,900);}
+    else{fb.textContent="Not yet. Check the letters and try again.";fb.className="feedback bad";}
+  }
+  document.getElementById("resetProgress").addEventListener("click",()=>{
+    if(confirm("Are you sure you want to reset all Lingo Star progress?")){points=0;completed=[];save();renderHome();renderLessons();alert("Your progress has been reset.");}
+  });
+
+  document.getElementById("year").textContent=new Date().getFullYear();
+  renderHome();renderLessons();renderWords();renderQuiz();renderMatch();renderSpell();updateStats();
+</script>
+</body>
+</html>
